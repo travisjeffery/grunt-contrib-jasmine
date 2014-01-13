@@ -27,7 +27,7 @@ module.exports = function(grunt) {
 
     // Merge task-specific options with these defaults.
     var options = this.options({
-      version : '1.3.1',
+      version : '2.0.0-rc5',
       timeout : 10000,
       styles  : [],
       specs   : [],
@@ -131,7 +131,9 @@ module.exports = function(grunt) {
     });
 
     phantomjs.on('console',console.log.bind(console));
-    phantomjs.on('verbose',grunt.verbose.writeln.bind(grunt.verbose));
+    phantomjs.on('verbose',function(msg) {
+      grunt.verbose.writeln('\nlog: '.yellow + msg);
+    });
     phantomjs.on('debug', grunt.log.debug.bind(grunt.log, 'phantomjs'));
     phantomjs.on('write', grunt.log.write.bind(grunt.log));
     phantomjs.on('writeln', grunt.log.writeln.bind(grunt.log));
@@ -167,9 +169,8 @@ module.exports = function(grunt) {
     });
 
     phantomjs.on('jasmine.reportSpecResults',function(specMetadata) {
-    if (specMetadata.status === "passed") thisRun.passed_specs++;
-
       if (specMetadata.status === "passed") {
+        thisRun.passed_specs++;
         grunt.verbose.writeln(specMetadata.description + ': ' + specMetadata.status.green);
         if (!grunt.option('verbose'))
           grunt.log.write('.'.green);
